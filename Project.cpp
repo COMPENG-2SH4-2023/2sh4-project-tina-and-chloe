@@ -14,8 +14,6 @@ using namespace std;
 GameMechs* snakeGameMech;
 Player* snakePlayer;
 objPos* snakePos;
-GameMechs* gameBoard;
-char entered;
 
 
 void Initialize(void);
@@ -32,7 +30,7 @@ int main(void)
 
     Initialize();
 
-    while(snakeGameMech->getExitFlagStatus() == false)  
+    while(snakeGameMech->getExitFlagStatus() == false && snakeGameMech->getLoseFlagStatus() == false)  
     {
         GetInput();
         RunLogic();
@@ -50,11 +48,9 @@ void Initialize(void)
     MacUILib_init();
     MacUILib_clearScreen();
     
-    gameBoard = new GameMechs(30,15);
     snakeGameMech = new GameMechs();
     snakePlayer = new Player(snakeGameMech);
     snakePos = new objPos();
-    entered = NULL;
 }
 
 void GetInput(void)
@@ -68,10 +64,9 @@ void GetInput(void)
 
 void RunLogic(void)
 {
-    entered = snakeGameMech->getInput();
-
+    
     /*
-    switch (entered)
+    switch (snakeGameMech->getInput())
     {
         case ' ' :
         {
@@ -81,13 +76,24 @@ void RunLogic(void)
        
     }
     */
-    if (entered == ' ')
+    if (snakeGameMech->getInput() == ' ')
     {
         snakeGameMech->setExitTrue();
     }
+    else
+    {
+        snakePlayer->updatePlayerDir();
+    }
+
+    snakePlayer->movePlayer();
+    snakeGameMech->incrementScore();
+    if(snakeGameMech->getScore() == 20)
+    {
+        snakeGameMech->setLoseFlag();
+    }
  
-    
-    snakeGameMech->clearInput();
+    // Below is commented out for debugging msg 
+    // snakeGameMech->clearInput();
 }
 
 void DrawScreen(void)
@@ -96,8 +102,8 @@ void DrawScreen(void)
     MacUILib_clearScreen();    
     int i;
     int j;
-    int x = gameBoard->getBoardSizeX();
-    int y = gameBoard->getBoardSizeY();    
+    int x = snakeGameMech->getBoardSizeX();
+    int y = snakeGameMech->getBoardSizeY();    
     objPos tracker;
 
     snakePlayer->getPlayerPos(*snakePos);
@@ -123,8 +129,28 @@ void DrawScreen(void)
         MacUILib_printf("\n"); 
     }
 
+    // Debugging msgs
     MacUILib_printf("Player is at (%d, %d) with symbol: %c\n", snakePos->x, snakePos->y, snakePos->symbol);
-
+    MacUILib_printf("Command given: %c, moving: ", snakeGameMech->getInput());
+    switch(snakePlayer->getDir())
+    {
+        case 0:
+            MacUILib_printf("up\n");
+            break;
+        case 1:
+            MacUILib_printf("down\n");
+            break;
+        case 2:
+            MacUILib_printf("left\n");
+            break;
+        case 3:
+            MacUILib_printf("right\n");
+            break;
+        case 4:
+            MacUILib_printf("STOPPED\n");
+            break;
+    }
+    MacUILib_printf("Score: %d\n", snakeGameMech->getScore());
 }
 
 void LoopDelay(void)
@@ -135,10 +161,23 @@ void LoopDelay(void)
 
 void CleanUp(void)
 {
-    MacUILib_clearScreen();    
-    delete snakeGameMech;
+    MacUILib_clearScreen();
+    // End game processes / msgs
+    if(snakeGameMech->getLoseFlagStatus() == true)
+    {
+        MacUILib_printf("You Lost!\n");
+    }
+    // else if(snakeGameMech->getExitFlagStatus() == true && snakeGameMech->getLoseFlagStatus() == false)
+    // {
+    //     MacUILib_printf("You Win!!!.\n");
+    // }
+    else if(snakeGameMech->getExitFlagStatus() == true)
+    {
+        MacUILib_printf("Game Exitted.\n");
+    }
+
     delete snakePlayer;
     delete snakePos;
-    delete gameBoard;
+    delete snakeGameMech;
     MacUILib_uninit();
 }

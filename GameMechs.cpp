@@ -3,13 +3,12 @@
 
 GameMechs::GameMechs()
 {
-    int boardSizeX = 30;
-    int boardSizeY = 15;
-    int score = 0; 
-    bool exitFlag = false; 
-    bool loseFlag = false; 
-    char input = '\0'; 
-    
+    boardSizeX = 30;
+    boardSizeY = 15;
+    score = 0; 
+    exitFlag = false; 
+    loseFlag = false; 
+    input = '\0'; 
 }
 
 GameMechs::GameMechs(int boardX, int boardY)
@@ -65,6 +64,11 @@ int GameMechs::getBoardSizeX()
 int GameMechs::getBoardSizeY()
 {
     return boardSizeY;
+}
+
+int GameMechs::getScore()
+{
+    return score;
 }
 
 void GameMechs::incrementScore()
