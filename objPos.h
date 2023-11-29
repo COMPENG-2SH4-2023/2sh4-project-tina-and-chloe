@@ -8,18 +8,23 @@ class objPos
         int y;
         char symbol;
 
-        objPos();
+        // Constructors
+        objPos(); // initialize an objPos
         objPos(objPos &o); // copy constructor
-        objPos(int xPos, int yPos, char sym);
+        objPos(int xPos, int yPos, char sym); // initialize with values
 
+        // Setters
         void setObjPos(objPos o);        
         void setObjPos(int xPos, int yPos, char sym);  
+        
+        // Getters
         void getObjPos(objPos &returnPos);
         char getSymbol();
 
-        bool isPosEqual(const objPos* refPos);
+        // Mutators
+        bool isPosEqual(const objPos* refPos); // evaluates if coordinates match ref
         
-        char getSymbolIfPosEqual(const objPos* refPos);
+        char getSymbolIfPosEqual(const objPos* refPos); // returns obj symbol if coordinates match
 };
 
 #endif
