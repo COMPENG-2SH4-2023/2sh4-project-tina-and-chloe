@@ -1,6 +1,9 @@
 #include <iostream>
 #include "MacUILib.h"
 #include "objPos.h"
+#include "objPosArrayList.h"
+#include "Player.h"
+#include "GameMechs.h"
 
 
 using namespace std;
@@ -8,6 +11,7 @@ using namespace std;
 #define DELAY_CONST 100000
 
 bool exitFlag;
+
 
 void Initialize(void);
 void GetInput(void);
@@ -42,6 +46,7 @@ void Initialize(void)
     MacUILib_clearScreen();
 
     exitFlag = false;
+
 }
 
 void GetInput(void)
@@ -56,6 +61,7 @@ void RunLogic(void)
 
 void DrawScreen(void)
 {
+    
     MacUILib_clearScreen();    
 
 }
