@@ -10,9 +10,12 @@ using namespace std;
 
 #define DELAY_CONST 100000
 
-bool exitFlag;
+
 GameMechs* snakeGameMech;
 Player* snakePlayer;
+objPos snakePos;
+GameMechs* gameBoard;
+
 
 void Initialize(void);
 void GetInput(void);
@@ -28,7 +31,7 @@ int main(void)
 
     Initialize();
 
-    while(exitFlag == false)  
+    while(snakeGameMech->getExitFlagStatus() == false)  
     {
         GetInput();
         RunLogic();
@@ -45,41 +48,75 @@ void Initialize(void)
 {
     MacUILib_init();
     MacUILib_clearScreen();
+    
 
-    exitFlag = false;
+    
+    gameBoard = new GameMechs(30,15);
     snakeGameMech = new GameMechs();
     snakePlayer = new Player(snakeGameMech);
 }
 
 void GetInput(void)
 {
+    if (MacUILib_hasChar())
+    {
+        snakeGameMech->setInput(MacUILib_getChar());
+    }
    
 }
 
 void RunLogic(void)
 {
+    char entered = snakeGameMech->getInput();
+
+    /*
+    switch (entered)
+    {
+        case ' ' :
+        {
+            snakeGameMech->setExitTrue();
+            break; 
+        }
+       
+    }
+    */
+    if (entered == ' ')
+    {
+        snakeGameMech->setExitTrue();
+    }
+ 
+    
+    snakeGameMech->clearInput();
+
     
 }
 
 void DrawScreen(void)
 {
+
     MacUILib_clearScreen();    
-    int i, j;
+    int i;
+    int j;
+    int x = gameBoard->getBoardSizeX();
+    int y = gameBoard->getBoardSizeY();    
 
     objPos tracker;
+    //tracker.setObjPos(4,2,'*');
+   
+
     objPos player;
     player.setObjPos(4,2,'*');
     
-    for (i=0; i<10; i++)
+    for (i=0; i<y; i++)
     {   
-        for (j=0;j<20; j++)
+        for (j=0;j<x; j++)
         {
             tracker.setObjPos(i,j,' ');
-            if (tracker.isPosEqual(&snakePlayer))
+            if (tracker.isPosEqual(&player))
             {
                 MacUILib_printf("*");
             }
-            else if (i>=1 && i<=8 && j >=1 && j <= 18)
+            else if (i>=1 && i<=y-2 && j >=1 && j <= x-2)
             {
                 MacUILib_printf(" ");
             }
@@ -93,7 +130,7 @@ void DrawScreen(void)
  
     }
 
-    
+
 
 }
 
@@ -106,9 +143,7 @@ void LoopDelay(void)
 void CleanUp(void)
 {
     MacUILib_clearScreen();    
-  
     delete snakeGameMech;
     delete snakePlayer;
-
     MacUILib_uninit();
 }
