@@ -61,11 +61,6 @@ void RunLogic(void)
 
 void DrawScreen(void)
 {
-<<<<<<< HEAD
-
-=======
-    
->>>>>>> e03971a09053cb701cbe1a7d61bbe0414153d1c8
     MacUILib_clearScreen();    
     int i;
     int j;
