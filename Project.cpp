@@ -64,17 +64,6 @@ void GetInput(void)
 void RunLogic(void)
 {
     
-    /*
-    switch (snakeGameMech->getInput())
-    {
-        case ' ' :
-        {
-            snakeGameMech->setExitTrue();
-            break; 
-        }
-       
-    }
-    */
     if (snakeGameMech->getInput() == ' ')
     {
         snakeGameMech->setExitTrue();
@@ -104,7 +93,6 @@ void DrawScreen(void)
     int x = snakeGameMech->getBoardSizeX();
     int y = snakeGameMech->getBoardSizeY();    
     objPos tracker;
-
     objPos snakePos;
     snakePlayer->getPlayerPos(snakePos);
     
@@ -165,12 +153,8 @@ void CleanUp(void)
     // End game processes / msgs
     if(snakeGameMech->getLoseFlagStatus() == true)
     {
-        MacUILib_printf("You Lost!\n");
+        MacUILib_printf("You Lost!\nYour score was: %d", snakeGameMech->getScore());
     }
-    // else if(snakeGameMech->getExitFlagStatus() == true && snakeGameMech->getLoseFlagStatus() == false)
-    // {
-    //     MacUILib_printf("You Win!!!.\n");
-    // }
     else if(snakeGameMech->getExitFlagStatus() == true)
     {
         MacUILib_printf("Game Exitted.\n");
