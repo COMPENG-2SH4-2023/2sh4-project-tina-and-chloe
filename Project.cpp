@@ -86,7 +86,7 @@ void RunLogic(void)
     }
 
     snakePlayer->movePlayer();
-    snakeGameMech->incrementScore();
+    //snakeGameMech->incrementScore();
     if(snakeGameMech->getScore() == 20)
     {
         snakeGameMech->setLoseFlag();
