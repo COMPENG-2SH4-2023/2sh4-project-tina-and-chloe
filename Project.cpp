@@ -11,7 +11,8 @@ using namespace std;
 #define DELAY_CONST 100000
 
 bool exitFlag;
-
+GameMechs* snakeGameMech;
+Player* snakePlayer;
 
 void Initialize(void);
 void GetInput(void);
@@ -46,7 +47,8 @@ void Initialize(void)
     MacUILib_clearScreen();
 
     exitFlag = false;
-
+    snakeGameMech = new GameMechs();
+    snakePlayer = new Player(snakeGameMech);
 }
 
 void GetInput(void)
@@ -62,13 +64,9 @@ void RunLogic(void)
 void DrawScreen(void)
 {
     MacUILib_clearScreen();    
-    int i;
-    int j;
+    int i, j;
 
     objPos tracker;
-    //tracker.setObjPos(4,2,'*');
-   
-
     objPos player;
     player.setObjPos(4,2,'*');
     
@@ -77,7 +75,7 @@ void DrawScreen(void)
         for (j=0;j<20; j++)
         {
             tracker.setObjPos(i,j,' ');
-            if (tracker.isPosEqual(&player))
+            if (tracker.isPosEqual(&snakePlayer))
             {
                 MacUILib_printf("*");
             }
@@ -109,5 +107,8 @@ void CleanUp(void)
 {
     MacUILib_clearScreen();    
   
+    delete snakeGameMech;
+    delete snakePlayer;
+
     MacUILib_uninit();
 }

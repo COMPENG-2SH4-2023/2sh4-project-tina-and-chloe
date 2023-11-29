@@ -65,6 +65,3 @@ void GameMechs::incrementScore()
 {
     score += 1; 
 }
-
-
-
