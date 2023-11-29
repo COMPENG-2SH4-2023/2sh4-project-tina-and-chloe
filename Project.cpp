@@ -13,8 +13,9 @@ using namespace std;
 
 GameMechs* snakeGameMech;
 Player* snakePlayer;
-objPos snakePos;
+objPos* snakePos;
 GameMechs* gameBoard;
+char entered;
 
 
 void Initialize(void);
@@ -49,11 +50,11 @@ void Initialize(void)
     MacUILib_init();
     MacUILib_clearScreen();
     
-
-    
     gameBoard = new GameMechs(30,15);
     snakeGameMech = new GameMechs();
     snakePlayer = new Player(snakeGameMech);
+    snakePos = new objPos();
+    entered = NULL;
 }
 
 void GetInput(void)
@@ -67,7 +68,7 @@ void GetInput(void)
 
 void RunLogic(void)
 {
-    char entered = snakeGameMech->getInput();
+    entered = snakeGameMech->getInput();
 
     /*
     switch (entered)
@@ -87,8 +88,6 @@ void RunLogic(void)
  
     
     snakeGameMech->clearInput();
-
-    
 }
 
 void DrawScreen(void)
@@ -99,38 +98,32 @@ void DrawScreen(void)
     int j;
     int x = gameBoard->getBoardSizeX();
     int y = gameBoard->getBoardSizeY();    
-
     objPos tracker;
-    //tracker.setObjPos(4,2,'*');
-   
 
-    objPos player;
-    player.setObjPos(4,2,'*');
+    snakePlayer->getPlayerPos(*snakePos);
     
-    for (i=0; i<y; i++)
+    for (i = 0; i < y; i++)
     {   
-        for (j=0;j<x; j++)
+        for (j = 0; j < x; j++)
         {
-            tracker.setObjPos(i,j,' ');
-            if (tracker.isPosEqual(&player))
+            tracker.setObjPos( j, i,' ');
+            if (tracker.isPosEqual(snakePos))
             {
-                MacUILib_printf("*");
+                MacUILib_printf("%c", snakePos->symbol);
             }
-            else if (i>=1 && i<=y-2 && j >=1 && j <= x-2)
+            else if (i == 0 || i == y-1 || j == 0 || j == x-1)
             {
-                MacUILib_printf(" ");
+                MacUILib_printf("#");
             }
             else
             {
-                MacUILib_printf("#"); 
+                MacUILib_printf(" "); 
             }
-            
         }
         MacUILib_printf("\n"); 
- 
     }
 
-
+    MacUILib_printf("Player is at (%d, %d) with symbol: %c\n", snakePos->x, snakePos->y, snakePos->symbol);
 
 }
 
@@ -145,5 +138,7 @@ void CleanUp(void)
     MacUILib_clearScreen();    
     delete snakeGameMech;
     delete snakePlayer;
+    delete snakePos;
+    delete gameBoard;
     MacUILib_uninit();
 }
