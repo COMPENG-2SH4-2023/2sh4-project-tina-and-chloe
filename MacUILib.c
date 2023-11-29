@@ -46,7 +46,7 @@ print_ptr MacUILib_printf;
 	
 #endif
 
-	
+/*
 #ifdef POSIX
 
 	#include <ncurses.h>
@@ -109,3 +109,4 @@ print_ptr MacUILib_printf;
 	}
 
 #endif
+*/
