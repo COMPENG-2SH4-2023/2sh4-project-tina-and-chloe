@@ -1,4 +1,5 @@
 #include "GameMechs.h"
+#include "MacUILib.h"
 
 GameMechs::GameMechs()
 {
@@ -27,7 +28,11 @@ bool GameMechs::getExitFlagStatus()
 
 char GameMechs::getInput()
 {
-    //input = MacUILib_getChar();
+    if (MacUILib_hasChar())
+    {
+        input = MacUILib_getChar();
+    }
+    
 }
 
 int GameMechs::getBoardSizeX()
@@ -56,9 +61,10 @@ void GameMechs::clearInput()
     input = 0; 
 }
 
-/*void GameMechs::incrementScore(int score)
+void GameMechs::incrementScore()
 {
     score += 1; 
 }
-*/
+
+
 
