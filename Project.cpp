@@ -13,7 +13,6 @@ using namespace std;
 
 GameMechs* snakeGameMech;
 Player* snakePlayer;
-objPos* snakePos;
 
 
 void Initialize(void);
@@ -50,7 +49,7 @@ void Initialize(void)
     
     snakeGameMech = new GameMechs();
     snakePlayer = new Player(snakeGameMech);
-    snakePos = new objPos();
+    
 }
 
 void GetInput(void)
@@ -106,16 +105,17 @@ void DrawScreen(void)
     int y = snakeGameMech->getBoardSizeY();    
     objPos tracker;
 
-    snakePlayer->getPlayerPos(*snakePos);
+    objPos snakePos;
+    snakePlayer->getPlayerPos(snakePos);
     
     for (i = 0; i < y; i++)
     {   
         for (j = 0; j < x; j++)
         {
             tracker.setObjPos( j, i,' ');
-            if (tracker.isPosEqual(snakePos))
+            if (tracker.isPosEqual(&snakePos))
             {
-                MacUILib_printf("%c", snakePos->symbol);
+                MacUILib_printf("%c", snakePos.symbol);
             }
             else if (i == 0 || i == y-1 || j == 0 || j == x-1)
             {
@@ -130,7 +130,7 @@ void DrawScreen(void)
     }
 
     // Debugging msgs
-    MacUILib_printf("Player is at (%d, %d) with symbol: %c\n", snakePos->x, snakePos->y, snakePos->symbol);
+    MacUILib_printf("Player is at (%d, %d) with symbol: %c\n", snakePos.x, snakePos.y, snakePos.symbol);
     MacUILib_printf("Command given: %c, moving: ", snakeGameMech->getInput());
     switch(snakePlayer->getDir())
     {
@@ -177,7 +177,6 @@ void CleanUp(void)
     }
 
     delete snakePlayer;
-    delete snakePos;
     delete snakeGameMech;
     MacUILib_uninit();
 }
