@@ -15,6 +15,7 @@ GameMechs* snakeGameMech;
 Player* snakePlayer;
 
 
+
 void Initialize(void);
 void GetInput(void);
 void RunLogic(void);
@@ -49,6 +50,11 @@ void Initialize(void)
     
     snakeGameMech = new GameMechs();
     snakePlayer = new Player(snakeGameMech);
+
+    objPos blankobjPos;
+    snakePlayer->getPlayerPos(blankobjPos);
+    snakeGameMech->generateFood(blankobjPos);
+
     
 }
 
@@ -63,7 +69,6 @@ void GetInput(void)
 
 void RunLogic(void)
 {
-    
     if (snakeGameMech->getInput() == ' ')
     {
         snakeGameMech->setExitTrue();
@@ -89,7 +94,10 @@ void DrawScreen(void)
     int y = snakeGameMech->getBoardSizeY();    
     objPos tracker;
     objPos snakePos;
+    objPos foodPos;
     snakePlayer->getPlayerPos(snakePos);
+    snakeGameMech->getFoodPos(foodPos);
+    
     
     for (i = 0; i < y; i++)
     {   
@@ -99,6 +107,10 @@ void DrawScreen(void)
             if (tracker.isPosEqual(&snakePos))
             {
                 MacUILib_printf("%c", snakePos.symbol);
+            }
+            else if(tracker.isPosEqual(&foodPos))
+            {
+                MacUILib_printf("%c", foodPos.symbol);
             }
             else if (i == 0 || i == y-1 || j == 0 || j == x-1)
             {
@@ -114,7 +126,8 @@ void DrawScreen(void)
 
     // Debugging msgs
     MacUILib_printf("Player is at (%d, %d) with symbol: %c\n", snakePos.x, snakePos.y, snakePos.symbol);
-    MacUILib_printf("Command given: %c, moving: ", snakeGameMech->getInput());
+    MacUILib_printf("Command given: %c, moving: \n", snakeGameMech->getInput());
+    MacUILib_printf("food is at (%d, %d) with symbol: %c\n", foodPos.x, foodPos.y, foodPos.symbol);
     switch(snakePlayer->getDir())
     {
         case 0:
