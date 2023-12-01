@@ -39,7 +39,8 @@ void objPosArrayList::insertTail(objPos thisPos)
         return;
     }
 
-    aList[sizeList++] = thisPos;
+    aList[sizeList] = thisPos;
+    sizeList++;
 }
 
 void objPosArrayList::removeHead()
@@ -90,4 +91,17 @@ void objPosArrayList::getTailElement(objPos &returnPos)
 void objPosArrayList::getElement(objPos &returnPos, int index)
 {
     returnPos.setObjPos(aList[index].x, aList[index].y, aList[index].symbol);
+}
+
+bool objPosArrayList::objPosIsIn(objPos thisPos)
+{
+    for(int i = 0; i < sizeList; i++)
+    {
+        if(aList[i].isPosEqual(&thisPos))
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
