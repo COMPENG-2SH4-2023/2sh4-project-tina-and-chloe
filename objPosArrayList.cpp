@@ -13,6 +13,17 @@ objPosArrayList::~objPosArrayList()
     delete[] aList;
 }
 
+objPosArrayList::objPosArrayList(const objPosArrayList &l)
+{
+    sizeList = l.sizeList;
+    sizeArray = l.sizeArray;
+    aList = new objPos[ARRAY_MAX_CAP];
+    for(int i = 0; i < sizeList; i++)
+    {
+        aList[i] = l.aList[i];
+    }
+}
+
 int objPosArrayList::getSize()
 {
     return sizeList;

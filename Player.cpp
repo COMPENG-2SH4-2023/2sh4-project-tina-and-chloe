@@ -1,6 +1,7 @@
 #include "Player.h"
 #include "GameMechs.h"
 #include "objPosArrayList.h"
+#include "MacUILib.h"
 
 Player::Player(GameMechs* thisGMRef)
 {
@@ -22,6 +23,13 @@ Player::~Player()
 {
     // delete any heap members here
     delete[] playerPosList;
+}
+
+Player::Player(const Player &l)
+{
+    myDir = l.myDir;
+    mainGameMechsRef = l.mainGameMechsRef;
+    playerPosList = l.playerPosList;
 }
 
 objPosArrayList* Player::getPlayerPos()
@@ -123,12 +131,35 @@ void Player::movePlayer()
         newHead.y = 1;
     }
 
-    if (myDir != STOP)
+
+
+    // Eat food logic 
+
+    objPos foodLocation;
+    objPos snakeHead;
+    playerPosList->getHeadElement(snakeHead);
+    mainGameMechsRef->getFoodPos(foodLocation);
+    int k;
+
+    if (foodLocation.isPosEqual(&snakeHead) && myDir != STOP) 
     {
+        // Increment score
+        mainGameMechsRef->incrementScore();
+        // Insert head, but not remove tail
+        playerPosList->insertHead(newHead);
+        // Regenerate food
+        mainGameMechsRef->generateFood(*getPlayerPos());
+    }
+    else if (myDir != STOP)
+    {
+        // Insert head, remove tail (aka move)
         playerPosList->insertHead(newHead);
         playerPosList->removeTail();
     }
+    
+
 }
+
 
 int Player::getDir()
 {

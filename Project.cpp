@@ -46,14 +46,14 @@ void Initialize(void)
     MacUILib_init();
     MacUILib_clearScreen();
     
+    // Initialize heap elements
     snakeGameMech = new GameMechs();
     snakePlayer = new Player(snakeGameMech);
 
-    objPos snakeHeadPos;
-    (snakePlayer->getPlayerPos())->getHeadElement(snakeHeadPos);
-    snakeGameMech->generateFood(snakeHeadPos);
-
-    
+    // Generate initial food
+    objPosArrayList *snakeWholePos;
+    snakeWholePos = snakePlayer->getPlayerPos();
+    snakeGameMech->generateFood(*snakeWholePos);
 }
 
 void GetInput(void)
