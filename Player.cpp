@@ -140,6 +140,18 @@ void Player::movePlayer()
     playerPosList->getHeadElement(snakeHead);
     mainGameMechsRef->getFoodPos(foodLocation);
     int k;
+    
+    objPos snakeLoc;
+    int snakeSize = playerPosList->getSize();
+    objPos snakeBody; 
+    for(k=2;k<snakeSize; k++)
+    {
+        playerPosList->getElement(snakeLoc,k);
+        if (snakeHead.isPosEqual(&snakeLoc))
+        {
+            mainGameMechsRef->setLoseFlag();
+        }
+    }
 
     if (foodLocation.isPosEqual(&snakeHead) && myDir != STOP) 
     {
@@ -156,6 +168,8 @@ void Player::movePlayer()
         playerPosList->insertHead(newHead);
         playerPosList->removeTail();
     }
+
+    
     
 
 }
