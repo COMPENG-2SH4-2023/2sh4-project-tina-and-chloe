@@ -120,6 +120,7 @@ void DrawScreen(void)
                     if(tracker.isPosEqual(&snakePos))
                     {
                         MacUILib_printf("%c", snakePos.symbol);
+                        break;
                     }
                 }
             }
