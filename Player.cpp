@@ -131,28 +131,30 @@ void Player::movePlayer()
         newHead.y = 1;
     }
 
-
-
-    // Eat food logic 
-
+    // Snake interactions 
+    // Variables for food collisions
     objPos foodLocation;
     objPos snakeHead;
     playerPosList->getHeadElement(snakeHead);
     mainGameMechsRef->getFoodPos(foodLocation);
     int k;
     
+    // Variables for suicide detection
     objPos snakeLoc;
     int snakeSize = playerPosList->getSize();
-    objPos snakeBody; 
+
+    // Suicide detection
     for(k=2;k<snakeSize; k++)
     {
         playerPosList->getElement(snakeLoc,k);
         if (snakeHead.isPosEqual(&snakeLoc))
         {
             mainGameMechsRef->setLoseFlag();
+            return;
         }
     }
 
+    // Eat foor logic
     if (foodLocation.isPosEqual(&snakeHead) && myDir != STOP) 
     {
         // Increment score
@@ -167,11 +169,7 @@ void Player::movePlayer()
         // Insert head, remove tail (aka move)
         playerPosList->insertHead(newHead);
         playerPosList->removeTail();
-    }
-
-    
-    
-
+    } 
 }
 
 
