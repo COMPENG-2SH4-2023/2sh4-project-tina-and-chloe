@@ -5,16 +5,22 @@
 #include "objPosArrayList.h"
 #include "GameMechs.h"
 
+#define foodQuantity 3
+
 class Food
 {
     private: 
-        objPos foodPos;
+        objPosArrayList* foodBucket;
 
     public: 
+        // Constructor, destructor, copy constructor
         Food();
+        ~Food();
+        Food(const Food &l);
 
+        // Other methods
         void generateFood(objPosArrayList playerBlockOff, GameMechs* mainGameMech);
-        void getFoodPos(objPos &returnPos);
+        objPosArrayList* getFoodPos();
 };
 
 #endif

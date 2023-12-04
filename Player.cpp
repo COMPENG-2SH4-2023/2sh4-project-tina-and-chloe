@@ -8,17 +8,15 @@ Player::Player(GameMechs* thisGMRef)
 {
     mainGameMechsRef = thisGMRef;
     myDir = STOP;
-
-    // more actions to be included
     playerPosList = new objPosArrayList;
 
+    // Initial snake head position
     objPos playerHead;
     int startX = (mainGameMechsRef->getBoardSizeX()) / 2;
     int startY = (mainGameMechsRef->getBoardSizeY()) / 2;
     playerHead.setObjPos(startX, startY, '*');
     playerPosList->insertHead(playerHead);
 }
-
 
 Player::~Player()
 {
@@ -39,6 +37,7 @@ objPosArrayList* Player::getPlayerPos()
 
 void Player::updatePlayerDir()
 {
+    // Update the player's direction state based on WASD input
     switch(mainGameMechsRef->getInput())
     {
         case 'W':
@@ -80,10 +79,11 @@ void Player::updatePlayerDir()
 
 void Player::movePlayer(Food* foodPos)
 {
-    // PPA3 Finite State Machine logic
+    // Track where the head currently is
     objPos newHead;
     playerPosList->getHeadElement(newHead);
 
+    // Assign the next coordinate of the head based on the direction state
     switch(myDir)
     {
         case UP: 
@@ -109,7 +109,7 @@ void Player::movePlayer(Food* foodPos)
             break;
     }
 
-    // Wrap-around logic
+    // Wrap-around logic (for next head coordinate)
     if(newHead.x == 0)
     {
         newHead.x = mainGameMechsRef->getBoardSizeX() - 2;
@@ -128,12 +128,12 @@ void Player::movePlayer(Food* foodPos)
         newHead.y = 1;
     }
 
-    // Snake interactions 
+    // Snake interactions --- Food Collection & Suicide Detection
     // Variables for food collisions
-    objPos foodLocation;
+    objPosArrayList* foodLocation = foodPos->getFoodPos();
+    objPos collisionFood;
     objPos snakeHead;
     playerPosList->getHeadElement(snakeHead);
-    foodPos->getFoodPos(foodLocation);
     int k;
     
     // Variables for suicide detection
@@ -141,6 +141,7 @@ void Player::movePlayer(Food* foodPos)
     int snakeSize = playerPosList->getSize();
 
     // Suicide detection
+    //   end the game if snake head overlaps with its body/tail
     for(k=2;k<snakeSize; k++)
     {
         playerPosList->getElement(snakeLoc,k);
@@ -151,14 +152,44 @@ void Player::movePlayer(Food* foodPos)
         }
     }
 
-    // Eat foor logic
-    if (foodLocation.isPosEqual(&snakeHead) && myDir != STOP) 
+    // Eat food logic
+    if (foodLocation->objPosIsIn(snakeHead) && myDir != STOP) 
     {
-        // Increment score
-        mainGameMechsRef->incrementScore();
-        // Insert head, but not remove tail
-        playerPosList->insertHead(newHead);
-        // Regenerate food
+        // Find which food it ate (symbol)
+        for(int f = 0; f < foodLocation->getSize(); f++)
+        {
+            foodLocation->getElement(collisionFood,f);
+            if(snakeHead.isPosEqual(&collisionFood))
+                break;
+        }
+
+        // Decide what happens based on the symbol
+        switch(collisionFood.symbol)
+        {
+            // Normal food, score +1, increase snake size +1
+            case 'O':
+                mainGameMechsRef->incrementScore();
+                playerPosList->insertHead(newHead);
+                break;
+            // Death Food!! -> ends the game
+            case 'X':
+                playerPosList->insertHead(newHead);
+                mainGameMechsRef->setLoseFlag();
+                break;
+            // SUPER Food! -> score +5, increase snake size +1
+            case '$':
+                mainGameMechsRef->incrementScore();
+                mainGameMechsRef->incrementScore();
+                mainGameMechsRef->incrementScore();
+                mainGameMechsRef->incrementScore();
+                mainGameMechsRef->incrementScore();
+                playerPosList->insertHead(newHead);
+                break;
+            default:
+                break;
+        }
+
+        // Regenerate all the food
         foodPos->generateFood(*playerPosList, mainGameMechsRef);
     }
     else if (myDir != STOP)
@@ -168,7 +199,6 @@ void Player::movePlayer(Food* foodPos)
         playerPosList->removeTail();
     } 
 }
-
 
 int Player::getDir()
 {

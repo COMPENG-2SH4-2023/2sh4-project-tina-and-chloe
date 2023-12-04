@@ -23,9 +23,11 @@ class GameMechs
         int score;
 
     public:
+        // Constructors
         GameMechs();
         GameMechs(int boardX, int boardY);
         
+        // Other methods
         bool getExitFlagStatus();
         void setExitTrue();
 

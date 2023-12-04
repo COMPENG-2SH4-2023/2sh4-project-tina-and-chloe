@@ -11,14 +11,15 @@ class Player
     public:
         enum Dir {UP, DOWN, LEFT, RIGHT, STOP};  // This is the direction state
 
+        // Constructor, destructor, copy constructor
         Player(GameMechs* thisGMRef);
         ~Player();
         Player(const Player &l);
 
+        // Other methods
         objPosArrayList* getPlayerPos(); 
         void updatePlayerDir();
         void movePlayer(Food* foodPos);
-
         int getDir();
 
     private:

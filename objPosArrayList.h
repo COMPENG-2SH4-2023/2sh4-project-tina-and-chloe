@@ -13,11 +13,15 @@ class objPosArrayList
         int sizeArray;
 
     public:
+        // Constructors, destructor, copy constructor
         objPosArrayList();
+        objPosArrayList(int maxSize);
         ~objPosArrayList();
         objPosArrayList(const objPosArrayList &l);
 
+        // Other methods
         int getSize();
+        
         void insertHead(objPos thisPos);
         void insertTail(objPos thisPos);
         void removeHead();
