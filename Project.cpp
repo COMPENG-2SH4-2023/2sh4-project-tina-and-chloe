@@ -104,7 +104,7 @@ void DrawScreen(void)
     objPos foodPos;
     snakeFood->getFoodPos(foodPos);
     
-    
+    // Print logic for everything within game board
     for (i = 0; i < y; i++)
     {   
         for (j = 0; j < x; j++)
@@ -142,6 +142,10 @@ void DrawScreen(void)
         MacUILib_printf("\n"); 
     }
 
+    // Additional game messages
+    MacUILib_printf("\n=====Snake=====\n");
+    MacUILib_printf("Score: %d\n", snakeGameMech->getScore());
+
     // Debugging msgs
     objPos thisPos;
     for(int k = 0; k<5; k++)
@@ -152,26 +156,6 @@ void DrawScreen(void)
     MacUILib_printf("List size: %d\n", snakeList);
     listPtr->getHeadElement(thisPos);
     MacUILib_printf("Player Head is at (%d, %d) with symbol: %c\n", thisPos.x, thisPos.y, thisPos.symbol);
-    MacUILib_printf("Command given: %c, moving: ", snakeGameMech->getInput());
-    switch(snakePlayer->getDir())
-    {
-        case 0:
-            MacUILib_printf("up\n");
-            break;
-        case 1:
-            MacUILib_printf("down\n");
-            break;
-        case 2:
-            MacUILib_printf("left\n");
-            break;
-        case 3:
-            MacUILib_printf("right\n");
-            break;
-        case 4:
-            MacUILib_printf("STOPPED\n");
-            break;
-    }
-    MacUILib_printf("Score: %d\n", snakeGameMech->getScore());
     MacUILib_printf("food is at (%d, %d) with symbol: %c\n", foodPos.x, foodPos.y, foodPos.symbol);
 }
 
