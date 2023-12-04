@@ -1,6 +1,7 @@
 #include "Player.h"
 #include "GameMechs.h"
 #include "objPosArrayList.h"
+#include "Food.h"
 #include "MacUILib.h"
 
 Player::Player(GameMechs* thisGMRef)
@@ -21,7 +22,6 @@ Player::Player(GameMechs* thisGMRef)
 
 Player::~Player()
 {
-    // delete any heap members here
     delete[] playerPosList;
 }
 
@@ -34,14 +34,11 @@ Player::Player(const Player &l)
 
 objPosArrayList* Player::getPlayerPos()
 {
-    // return the reference to the playerPos arrray list
     return playerPosList;
 }
 
 void Player::updatePlayerDir()
 {
-    // PPA3 input processing logic    
-
     switch(mainGameMechsRef->getInput())
     {
         case 'W':
@@ -81,7 +78,7 @@ void Player::updatePlayerDir()
     }
 }
 
-void Player::movePlayer()
+void Player::movePlayer(Food* foodPos)
 {
     // PPA3 Finite State Machine logic
     objPos newHead;
@@ -136,7 +133,7 @@ void Player::movePlayer()
     objPos foodLocation;
     objPos snakeHead;
     playerPosList->getHeadElement(snakeHead);
-    mainGameMechsRef->getFoodPos(foodLocation);
+    foodPos->getFoodPos(foodLocation);
     int k;
     
     // Variables for suicide detection
@@ -162,7 +159,7 @@ void Player::movePlayer()
         // Insert head, but not remove tail
         playerPosList->insertHead(newHead);
         // Regenerate food
-        mainGameMechsRef->generateFood(*getPlayerPos());
+        foodPos->generateFood(*playerPosList, mainGameMechsRef);
     }
     else if (myDir != STOP)
     {

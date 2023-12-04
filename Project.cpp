@@ -4,15 +4,15 @@
 #include "objPosArrayList.h"
 #include "Player.h"
 #include "GameMechs.h"
-
+#include "Food.h"
 
 using namespace std;
 
 #define DELAY_CONST 100000
 
-
 GameMechs* snakeGameMech;
 Player* snakePlayer;
+Food* snakeFood;
 
 void Initialize(void);
 void GetInput(void);
@@ -20,7 +20,6 @@ void RunLogic(void);
 void DrawScreen(void);
 void LoopDelay(void);
 void CleanUp(void);
-
 
 
 int main(void)
@@ -49,11 +48,12 @@ void Initialize(void)
     // Initialize heap elements
     snakeGameMech = new GameMechs();
     snakePlayer = new Player(snakeGameMech);
+    snakeFood = new Food();
 
     // Generate initial food
     objPosArrayList *snakeWholePos;
     snakeWholePos = snakePlayer->getPlayerPos();
-    snakeGameMech->generateFood(*snakeWholePos);
+    snakeFood->generateFood(*snakeWholePos, snakeGameMech);
 }
 
 void GetInput(void)
@@ -62,11 +62,12 @@ void GetInput(void)
     {
         snakeGameMech->setInput(MacUILib_getChar());
     }
-   
 }
 
 void RunLogic(void)
 {
+    // Spacebar will exit the game otherwise, input is used
+    // to update player movement state
     if (snakeGameMech->getInput() == ' ')
     {
         snakeGameMech->setExitTrue();
@@ -76,9 +77,11 @@ void RunLogic(void)
         snakePlayer->updatePlayerDir();
     }
 
-    snakePlayer->movePlayer();
+    // Move the player based on the state
+    snakePlayer->movePlayer(snakeFood);
  
     // Below is commented out for debugging msg 
+    // Clear the input
     // snakeGameMech->clearInput();
 }
 
@@ -92,14 +95,14 @@ void DrawScreen(void)
     int x = snakeGameMech->getBoardSizeX();
     int y = snakeGameMech->getBoardSizeY(); 
     objPos tracker;
-    // Variables for iterating interating with snake list   
+    // Variables for iterating through "snake list"   
     int s;
     int snakeList = (snakePlayer->getPlayerPos())->getSize();
     objPosArrayList* listPtr = snakePlayer->getPlayerPos();
     objPos snakePos;
     // Variable for holding food position
     objPos foodPos;
-    snakeGameMech->getFoodPos(foodPos);
+    snakeFood->getFoodPos(foodPos);
     
     
     for (i = 0; i < y; i++)
@@ -107,11 +110,12 @@ void DrawScreen(void)
         for (j = 0; j < x; j++)
         {
             tracker.setObjPos( j, i,' ');
-            
+            // Print the border
             if (!listPtr->objPosIsIn(tracker) && (i == 0 || i == y-1 || j == 0 || j == x-1))
             {
                 MacUILib_printf("#");
             }
+            // Print the snake
             else if(listPtr->objPosIsIn(tracker))
             {
                 for(s = 0; s < snakeList; s++)
@@ -124,10 +128,12 @@ void DrawScreen(void)
                     }
                 }
             }
+            // Print the food(s)
             else if(!listPtr->objPosIsIn(tracker) && tracker.isPosEqual(&foodPos))
             {
                 MacUILib_printf("%c", foodPos.symbol);
             }
+            // Print whitespaces
             else
             {
                 MacUILib_printf(" "); 
@@ -171,25 +177,26 @@ void DrawScreen(void)
 
 void LoopDelay(void)
 {
-    // MacUILib_Delay(DELAY_CONST); // 0.1s delay
-    MacUILib_Delay(500000);
+    MacUILib_Delay(DELAY_CONST); // 0.1s delay
 }
-
 
 void CleanUp(void)
 {
     MacUILib_clearScreen();
-    // End game processes / msgs
+
+    // End game messages
     if(snakeGameMech->getLoseFlagStatus() == true)
     {
-        MacUILib_printf("You Lost!\nYour score was: %d", snakeGameMech->getScore());
+        MacUILib_printf("You Lost!\nYour score was: %d.", snakeGameMech->getScore());
     }
     else if(snakeGameMech->getExitFlagStatus() == true)
     {
-        MacUILib_printf("Game Exitted.\n");
+        MacUILib_printf("Game Exitted.\nYour score was: %d.", snakeGameMech->getScore());
     }
 
+    // End game processes
     delete snakePlayer;
+    delete snakeFood;
     delete snakeGameMech;
     MacUILib_uninit();
 }
